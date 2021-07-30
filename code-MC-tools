@@ -1,0 +1,117 @@
+@echo off
+color 
+echo Chargement
+if exist MC-tools.init.bat del MC-tools.init.bat
+title Verification des mises a jours...
+set version=0.1
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://cyril59310.fr/download/dev/MC-tools/version', 'versionMC-tools')"
+set /p verifversion= < versionMC-tools
+if %verifversion% NEQ %version% goto verifmaj
+ping 0 -n 1 >nul
+if not exist MC-tools-repertoire.txt (
+	echo "" >MC-tools-repertoire.txt
+)
+set /p checkrepertoire= < MC-tools-repertoire.txt
+if %checkrepertoire%=="" goto repertoirenotset
+
+
+:load
+:deb
+chcp 65001
+cls
+color 03
+set /p repertoire= < MC-tools-repertoire.txt
+set version=%version%
+title Programme de gestion des fichiers Minecraft by Cyril59310 V%version%
+echo.
+echo Programme de gestion des fichiers Minecraft by Cyril59310 V%version%
+echo.
+echo Repertoire d'installation: %repertoire%
+echo.
+echo -  0 = Ferme le programme.
+echo -  1 = 
+echo -  2 = 
+echo -  3 = 
+echo -  4 = .
+echo -  5 = Change le répertoire d'installation de votre Minecraft.
+echo -  6 = 
+echo -  7 = Ouvre le repertoire d'installation de Minecraft.
+echo.
+set /a command=99
+set /p command=Choix: 
+if %command%==0 exit
+if %command%==1 goto 
+if %command%==2 goto 
+if %command%==3 goto 
+if %command%==4 goto 
+if %command%==5 goto repertoirenotset
+if %command%==6 goto 
+if %command%==7 goto opendir
+if %command%==99 goto checkcom
+echo.
+echo choix incorrect
+ping 0 -n 2 >nul
+goto deb
+
+:checkcom
+echo.
+echo Préciser un choix !
+ping 0 -n 2 >nul
+goto deb
+
+:opendir
+explorer %repertoire%
+pause
+goto deb
+
+:repertoirenotset
+chcp 65001
+cls
+color 4
+echo.
+attrib -H MC-tools-repertoire.txt
+echo Repertoire de Minecraft non initialisé...
+echo merci de spécifier le dossier d'installation de votre Minecraft
+echo.
+echo "Repertoire d'installation: default" si le dossier d'installation est celui de base de minecraft.
+echo.
+set repertoire=
+set /p repertoire=Repertoire d'installation: 
+if %repertoire%==default set repertoire=C:\Users\%username%\AppData\Roaming\.minecraft
+if "%repertoire%"=="" (
+	echo.
+	echo veuillez specifier un répertoire !
+	pause
+	goto repertoirenotset
+)
+if exist %repertoire%\options.txt (
+	cls
+	echo.
+	color 2
+	echo Repertoire d'installation initialisé sur: %repertoire%
+	echo "%repertoire%"> MC-tools-repertoire.txt
+	pause
+	attrib +H MC-tools-repertoire.txt
+	goto load
+) else (
+	echo.
+	echo Impossible de trouver l'installation de Minecraft dans ce répertoire !
+	echo veuillez vérifier le chemin d'accè.
+	pause
+	goto repertoirenotset
+)
+
+:verifmaj
+cls
+echo.
+echo Une nouvelle mise a jour est disponible,
+echo    Version actuelle: %version%
+echo    Nouvelle version: %verifversion%
+echo.
+set /a tempverif=...
+set /p tempverif=voulez vous la telecharger ? (y/n): 
+if %tempverif%==y powershell -Command "(New-Object Net.WebClient).DownloadFile('https://cyril59310.fr/download/dev/MC-tools/code-MC-tools', 'MC-tools.bat')" & call MC-tools.bat
+if %tempverif%==n goto load
+echo Choix incorrect !
+ping 0 -n 2 >nul
+goto verifmaj 
