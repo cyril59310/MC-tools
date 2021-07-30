@@ -2,5 +2,5 @@
 color 3
 title Download...
 echo Telechargement du code...
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://cyril59310.fr/download/dev/MC-tools/code-MC-tools', 'modsGTA5.bat')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://cyril59310.fr/download/dev/MC-tools/code-MC-tools', 'MC-tools.bat')"
 call MC-tools.bat
